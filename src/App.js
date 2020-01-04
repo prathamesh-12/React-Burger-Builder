@@ -2,12 +2,13 @@ import React from 'react';
 import './App.css';
 
 import Layout from './components/Layout/Layout';
+import BurgerBuilder from './containers/BurgerBuilder/Burgerbuilder';
 
 function App() {
   return (
     <div>
         <Layout>
-            <h1>TEST data!</h1>
+            <BurgerBuilder />
         </Layout>
     </div>
   );
