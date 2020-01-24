@@ -1,3 +1,7 @@
 .list-item-ingredient{
     text-transform: capitalize;
 }
+.Price-label{
+    font-weight: bold;
+    font-style: italic;
+}

@@ -67,6 +67,18 @@ class BurgerBuilder extends Component {
         this.setState({ isDisabledOrderNow: sumIngredients > 0 });
     }
 
+    onOrderNowClickHandler = () => {
+        this.setState({isDisplayOrderSummary: true});
+    }
+
+    closeModal = () => {
+        this.setState({isDisplayOrderSummary: false});
+    }
+
+    onContinueClicked = (btnType) => {
+        debugger;
+    }
+
     render() {
         const disabledIngredients = {...this.state.ingredients};
         for (let iKey in disabledIngredients) {
@@ -74,10 +86,17 @@ class BurgerBuilder extends Component {
         }
         return (
             <Auxillary>
-                <Modal>
-                    <OrderSummary ingredients={this.state.ingredients}></OrderSummary>
+                <Modal 
+                    isShow={this.state.isDisplayOrderSummary}
+                    closeModal={this.closeModal}>
+                    <OrderSummary 
+                        ingredients={this.state.ingredients}
+                        price={this.state.price}
+                        onContinueClicked={this.onContinueClicked}
+                        onPurchaseCancelled={this.closeModal}
+                        ></OrderSummary>
                 </Modal>
-                <Burger ingredients={this.state.ingredients}/>
+                <Burger ingredients={this.state.ingredients}></Burger>
                 <BuildControls 
                     addIngredient={this.addIngredientsHandler}
                     removeIngredient={this.removeIngredientsHandler}
@@ -85,7 +104,8 @@ class BurgerBuilder extends Component {
                     price={this.state.price}
                     isDisabledOrderNow={this.state.isDisabledOrderNow}
                     isDisplayOrderSummary={this.state.isDisplayOrderSummary}
-                    />
+                    onOrderNowClickHandler={this.onOrderNowClickHandler}
+                    ></BuildControls>
             </Auxillary>
         );
     }

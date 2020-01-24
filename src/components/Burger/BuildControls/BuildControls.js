@@ -22,7 +22,13 @@ const buildControls = (props) => (
                     >
                     </BuildControl>
             ))}
-            <button className="OrderButton" disabled={!props.isDisabledOrderNow}>Order Now</button>
+            <button 
+                className="OrderButton" 
+                disabled={!props.isDisabledOrderNow}
+                onClick={props.onOrderNowClickHandler}
+                >
+                    Order Now
+            </button>
         </div>);
 
 
