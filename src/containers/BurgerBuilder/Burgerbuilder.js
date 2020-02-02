@@ -5,6 +5,9 @@ import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axios_orders from '../../axios-orders';
+import Spinner from "../../components/UI/Spinner/Spinner";
+
 
 const BASE_INGREDIENTS_PRICE = {
         meat: 0.7,
@@ -23,7 +26,8 @@ class BurgerBuilder extends Component {
         },
         price: 5,
         isDisabledOrderNow: false,
-        isDisplayOrderSummary: false
+        isDisplayOrderSummary: false,
+        isDisplaySpinner: false
     };
 
     addIngredientsHandler = (type) => {
@@ -75,8 +79,34 @@ class BurgerBuilder extends Component {
         this.setState({isDisplayOrderSummary: false});
     }
 
-    onContinueClicked = (btnType) => {
-        debugger;
+    onContinueClicked = () => {
+        this.setState({isDisplaySpinner: true});
+        const orderData = {
+            ingredients: this.state.ingredients,
+            price: this.state.price,
+            customer: {
+                name: 'Prats Nims',
+                email: 'prats@gmail.com',
+                phone: '4085122139',
+                address: {
+                    addressLine1: '50 Oak Blf',
+                    state: 'CT',
+                    country: 'US',
+                    zip: '06001'
+                }
+            },
+            deliveryMethod: 'Fast'
+        };
+
+        axios_orders.post("/orders.json", orderData)
+            .then(respData => {
+                console.log(respData);
+                this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false});
+            })
+            .catch(errData => {
+                console.log(errData);
+                this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false});
+            });
     }
 
     render() {
@@ -84,17 +114,24 @@ class BurgerBuilder extends Component {
         for (let iKey in disabledIngredients) {
             disabledIngredients[iKey] = (disabledIngredients[iKey] < 1);
         }
+        
+        let orderSummary = <OrderSummary 
+                                ingredients={this.state.ingredients}
+                                price={this.state.price}
+                                onContinueClicked={this.onContinueClicked}
+                                onPurchaseCancelled={this.closeModal}
+                                ></OrderSummary>
+        
+        if(this.state.isDisplaySpinner) {
+            orderSummary = <Spinner />
+        }
+
         return (
             <Auxillary>
                 <Modal 
                     isShow={this.state.isDisplayOrderSummary}
                     closeModal={this.closeModal}>
-                    <OrderSummary 
-                        ingredients={this.state.ingredients}
-                        price={this.state.price}
-                        onContinueClicked={this.onContinueClicked}
-                        onPurchaseCancelled={this.closeModal}
-                        ></OrderSummary>
+                    {orderSummary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients}></Burger>
                 <BuildControls 
