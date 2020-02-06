@@ -7,6 +7,8 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios_orders from '../../axios-orders';
 import Spinner from "../../components/UI/Spinner/Spinner";
+import errorHandler from "../../hoc/Error-Handling/ErrorHandler";
+import {Redirect} from 'react-router-dom';
 
 
 const BASE_INGREDIENTS_PRICE = {
@@ -27,7 +29,8 @@ class BurgerBuilder extends Component {
         price: 5,
         isDisabledOrderNow: false,
         isDisplayOrderSummary: false,
-        isDisplaySpinner: false
+        isDisplaySpinner: false,
+        isIngredientSaved: false
     };
 
     addIngredientsHandler = (type) => {
@@ -80,32 +83,41 @@ class BurgerBuilder extends Component {
     }
 
     onContinueClicked = () => {
-        this.setState({isDisplaySpinner: true});
-        const orderData = {
-            ingredients: this.state.ingredients,
-            price: this.state.price,
-            customer: {
-                name: 'Prats Nims',
-                email: 'prats@gmail.com',
-                phone: '4085122139',
-                address: {
-                    addressLine1: '50 Oak Blf',
-                    state: 'CT',
-                    country: 'US',
-                    zip: '06001'
-                }
-            },
-            deliveryMethod: 'Fast'
-        };
+        // this.setState({isDisplaySpinner: true});
+        // const orderData = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.price,
+        //     customer: {
+        //         name: 'Prats Nims',
+        //         email: 'prats@gmail.com',
+        //         phone: '4085122139',
+        //         address: {
+        //             addressLine1: '50 Oak Blf',
+        //             state: 'CT',
+        //             country: 'US',
+        //             zip: '06001'
+        //         }
+        //     },
+        //     deliveryMethod: 'Fast'
+        // };
 
-        axios_orders.post("/orders.json", orderData)
-            .then(respData => {
-                console.log(respData);
-                this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false});
-            })
-            .catch(errData => {
-                console.log(errData);
-                this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false});
+        // axios_orders.post("/orders.json", orderData)
+        //     .then(respData => {
+        //         this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false, isIngredientSaved: true});
+        //         this.props.history.push("/checkout");
+        //     })
+        //     .catch(errData => {
+        //         console.log(errData);
+        //         this.setState({isDisplaySpinner: false, isDisplayOrderSummary: false});
+        //     });
+            const queryParams = [];
+
+            for (let iIngredientKey in this.state.ingredients) {
+                queryParams.push(encodeURIComponent(iIngredientKey)+"="+encodeURIComponent(this.state.ingredients[iIngredientKey]));
+            }
+            this.props.history.push({
+                pathname: "/checkout",
+                search: '?'+queryParams.join('&')
             });
     }
 
@@ -142,10 +154,10 @@ class BurgerBuilder extends Component {
                     isDisabledOrderNow={this.state.isDisabledOrderNow}
                     isDisplayOrderSummary={this.state.isDisplayOrderSummary}
                     onOrderNowClickHandler={this.onOrderNowClickHandler}
-                    ></BuildControls>
+                ></BuildControls> 
             </Auxillary>
         );
     }
 }
 
-export default BurgerBuilder;
+export default errorHandler(BurgerBuilder, axios_orders);

@@ -16,7 +16,7 @@ const burger = (props) => {
         }, [])
 
         if(!transformedIngredientsArray.length) {
-            transformedIngredientsArray = (<p>Add Ingredeients</p>)
+            transformedIngredientsArray = (<p>Add Ingredients</p>)
         }
 
     return (

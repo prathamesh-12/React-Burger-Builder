@@ -1,0 +1,14 @@
+.CheckoutSummaryWrapper {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.CheckoutSummaryBurgerWrapper{
+    width: 100%; 
+    text-align: center;
+}
+
+.CheckoutSummaryButtonsWrapper{
+    text-align: center;
+}
