@@ -16,11 +16,14 @@ class Checkout extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const ingredients = {};
         let params = new URLSearchParams(this.props.location.search);
-
+        let price = 0;
         for (let p of params) {
+            if(p === "price") {
+                debugger;
+            }
             ingredients[p[0]] = +p[1];
         }
         this.setState({ingredients: ingredients});
@@ -31,19 +34,21 @@ class Checkout extends Component {
     }
 
     onContiueCheckoutSummary = () => {
-        this.props.history.push("/checkout/contact-info");
+        this.props.history.replace("/checkout/contact-info");
     }
     
     render() {
         return (
-            <Auxillary>
+            <div>
                 <CheckoutSummary
                     ingredients={this.state.ingredients} 
                     onCancelCheckoutSummary={this.onCancelCheckoutSummary}
                     onContiueCheckoutSummary={this.onContiueCheckoutSummary}
                 />
-                <Route path={this.props.match.path+"contact-info"} component={ContactInfo}></Route>
-            </Auxillary>
+                <Route path={this.props.match.path+"/contact-info"} 
+                       render={() => (<ContactInfo ingredients={this.state.ingredients}/>)}
+                       ></Route>
+            </div>
         );
     }
 }
